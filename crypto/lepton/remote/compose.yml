@@ -1,0 +1,10 @@
+services:
+  lepton:
+    build: .
+    ports:
+      - 7004:1337
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
+          memory: 1000M

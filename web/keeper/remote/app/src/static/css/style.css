@@ -1,0 +1,121 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body {
+    background-color: #121212;
+}
+
+.container {
+    width: 50vw;
+    max-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin-top: 10px;
+    overflow-y: visible;
+    overflow-x: visible;
+    background: #1e1e1e;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+h5 {
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+    color: #e0e0e0;
+}
+
+.hover-text {
+    transition: all 0.5s ease-in-out;
+    color: #e0e0e0;
+}
+
+.secret-container {
+    position: relative;
+    text-align: center;
+}
+
+.secret-div {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    line-height: 50px;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    text-align: center;
+    border-radius: 15px;
+    transition: all 0.5s ease-in-out;
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+.secret-container:hover .secret-div {
+    opacity: 1;
+}
+
+.secret-container:hover .hover-text {
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+}
+
+.code-digit {
+    width: 45px;
+    border: none;
+    border-bottom: 3px solid rgba(224, 224, 224, 0.5);
+    margin: 0 10px;
+    text-align: center;
+    font-size: 36px;
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+#first-code-digit {
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.code-digit:focus {
+    border-bottom: 3px solid rgb(62, 136, 255);
+    outline: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+.secret-container {
+    position: relative;
+    display: inline-block;
+}
+
+.secret-container p {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+}
+
+.secret-container:hover p {
+    visibility: visible;
+    opacity: 1;
+}

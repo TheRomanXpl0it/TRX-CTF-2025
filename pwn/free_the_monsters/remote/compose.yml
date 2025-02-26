@@ -1,0 +1,22 @@
+services:
+  free-the-monsters:
+    image: cybersecnatlab/challenge-jail@sha256:d40fa9d97a4b62c68347f4b02b08ed651c39811fc8687759480699888f2f0bd6
+    restart: unless-stopped
+    init: true
+    privileged: true
+    volumes:
+      - './challenge:/home/user/chall:ro'
+      - './ld-linux-x86-64.so.2:/home/user/ld-linux.so:ro'
+      - './libc.so.6:/home/user/libs/libc.so.6:ro'
+    ports:
+      - '7009:1337'
+    environment:
+      - 'FLAG=TRX{wh0_th3_fuck_kn0w5_4b0u7_f457B1n5?!_153CA0}'
+      - 'SET_INTERPRETER=/home/user/ld-linux.so'
+      - 'SET_RPATH=/home/user/libs'
+      - 'TIMEOUT=600'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M

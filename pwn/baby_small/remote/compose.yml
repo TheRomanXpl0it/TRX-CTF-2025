@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+  challenge:
+    build:
+        context: .
+    ports:
+      - '7006:1337'
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2000M

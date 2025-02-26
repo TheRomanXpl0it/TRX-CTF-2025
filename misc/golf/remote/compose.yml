@@ -1,0 +1,19 @@
+
+services:
+  golf:
+    build: .
+    privileged: true
+    init: true
+    volumes:
+     - ./src/chall.py:/home/user/chall:ro
+    ports:
+      - 7000:1337
+    environment:
+      - FLAG_IN_ENV=false
+      - FLAG=TRX{https://www.youtube.com/watch?v=nSzTeFBa4qM}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 100M
+    

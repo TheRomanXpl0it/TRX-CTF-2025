@@ -1,0 +1,10 @@
+services:
+  magic_curves:
+    build: .
+    ports:
+      - 7005:1337
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
+          memory: 1000M

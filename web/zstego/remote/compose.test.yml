@@ -1,0 +1,11 @@
+services:
+  test:
+    build: .
+    ports:
+      - "1337:1337"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 250M

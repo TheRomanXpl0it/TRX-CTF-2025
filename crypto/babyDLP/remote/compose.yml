@@ -1,0 +1,10 @@
+services:
+  baby-dlp:
+    build: .
+    ports:
+      - 7002:1337
+    deploy:
+      resources:
+        limits:
+          cpus: '3.0'
+          memory: 1000M

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iframe</title>
+  </head>
+  <body>
+    <h1>Your secret</h1>
+    <div id="secret-container"></div>
+    <script>
+      (function() {
+        let container = document.getElementById("secret-container");
+        let secretDiv = document.createElement("div");
+        let shadow = secretDiv.attachShadow({ mode: "closed" });
+        
+        let flagElement = document.createElement("span");
+        flagElement.textContent =
+          localStorage.getItem("secret") || "TRX{fake_flag_for_testing}";
+        shadow.appendChild(flagElement);
+        
+        localStorage.removeItem("secret");
+        container.appendChild(secretDiv);
+      })();
+      
+      let d = document.createElement("div");
+      d.innerHTML = "<%= payload %>";
+      document.body.appendChild(d);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+{% include 'header.html' %}
+
+<div class="container text-center">
+    <form method="POST" action="/set-secret" id="secret-form" class="flex-column justify-content-center align-items-center {{'d-none' if secret else 'd-flex'}}">
+        <div id="step-1" class="form-step active text-center">
+            <h5>Input your secret code</h5>
+            <div class="d-flex justify-content-center mb-4 form-group">
+                <input class="code-digit" type="text" maxlength="1" pattern="[A-Z0-9]" id="first-code-digit" name="code">
+                <input class="code-digit" type="text" maxlength="1" pattern="[A-Z0-9]" name="code">
+                <input class="code-digit" type="text" maxlength="1" pattern="[A-Z0-9]" name="code">
+                <input class="code-digit" type="text" maxlength="1" pattern="[A-Z0-9]" name="code">
+                <input class="code-digit" type="text" maxlength="1" pattern="[A-Z0-9]" name="code">
+                <input class="code-digit" type="text" maxlength="1" pattern="[A-Z0-9]" name="code">
+            </div>
+            <button id="next-btn" class="btn btn-primary" data-mdb-ripple-init>Next</button>
+        </div>
+
+        <div id="step-2" class="form-step">
+            <div class="form-outline mb-3" data-mdb-input-init>
+                <input type="username" class="form-control" name="username" id="username-input" pattern="[a-z0-9]{3,32}">
+                <label class="form-label" for="username-input">Username</label>
+            </div>
+
+            <div class="form-outline" data-mdb-input-init>
+                <input type="password" class="form-control" placeholder="Your secret goes here" name="secret" id="secret-input">
+                <label class="form-label" for="secret-input">Your secret</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3" id="submit-button" data-mdb-ripple-init>Submit</button>
+        </div>
+    </form>
+    <div class="secret-container {{"" if secret else "d-none"}}">
+        <h5>Hover me to show the secret</h5>
+        <p>{{secret | safe }}</p>
+    </div>
+    
+</div>
+<script src="/static/js/app.js"></script>
+
+{% include 'footer.html' %}

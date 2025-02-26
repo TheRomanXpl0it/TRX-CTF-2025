@@ -1,0 +1,10 @@
+services:
+  editor:
+    build: .
+    ports:
+      - "7001:3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1000M

@@ -1,0 +1,16 @@
+{% include 'header.html' %}
+
+<div class="container text-center">
+    <h5>URL to visit</h5>
+    
+    <form action="/visit" method="POST">
+        <div class="form-outline mb-2" data-mdb-input-init>
+            <input type="text" class="form-control" id="visit-input" name="url" aria-label="Small" aria-describedby="inputGroup-sizing-sm" pattern="https?://(.+)" placeholder="http://example.com">
+            <label class="form-label" for="visit-input">Example label</label>
+        </div>
+             
+        <button class="btn btn-primary" type="submit" data-mdb-ripple-init>Submit</button>
+    </form>    
+</div>
+
+{% include 'footer.html' %}

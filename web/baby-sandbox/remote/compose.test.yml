@@ -1,0 +1,15 @@
+
+services:
+  sandbox:
+    build: ./challenge
+    ports:
+      - "1337:1337"
+    environment:
+      - FLAG=TRX{1_l0v3_d3pr3c4t3d_f34tur3s_1_h0p3_y0u_d0_t00}
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+

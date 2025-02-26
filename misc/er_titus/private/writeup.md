@@ -1,0 +1,1 @@
+after getting the image, put it in google lens or in the search by image; the first related search should be the name of the ariport, with all the pictures of the location.

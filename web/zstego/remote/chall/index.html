@@ -1,0 +1,21 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>zStego - Home</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body class="bg-light">
+        <div class="container text-center mt-5">
+            <h1 class="display-4">zStego</h1>
+            <p class="lead">Unravel the secrets hidden within Word documents.</p>
+            <p class="text-muted">In the digital age, secrets no longer rest on paper, but within the depths of bytes and compression algorithms. Legends speak of cryptic messages encoded within innocuous files, waiting to be discovered by those with the right tools and knowledge. Our cutting-edge technology probes deep into the fabric of documents, exposing the unseen. Will you be the one to uncover the truth?</p>
+            <form action="upload.php" method="POST" enctype="multipart/form-data" class="mt-4">
+                <div class="mb-3">
+                    <input type="file" name="input" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload & Scan</button>
+            </form>
+        </div>
+    </body>
+</html>

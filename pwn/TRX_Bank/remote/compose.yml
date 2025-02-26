@@ -1,0 +1,22 @@
+services:
+  trx-bank:
+    image: cybersecnatlab/challenge-jail@sha256:d40fa9d97a4b62c68347f4b02b08ed651c39811fc8687759480699888f2f0bd6
+    restart: unless-stopped
+    init: true
+    privileged: true
+    volumes:
+      - './bin/chal:/home/user/chall:ro'
+      - './glibc/ld-linux-x86-64.so.2:/home/user/ld-linux.so:ro'
+      - './glibc/:/home/user/libs:ro'
+    ports:
+      - '7010:1337'
+    environment:
+      - 'FLAG=TRX{un54f3_unl1nk_15_n07_f0r_7h3_h34p_0nly_a4b62c68}'
+      - 'SET_INTERPRETER=/home/user/ld-linux.so'
+      - 'SET_RPATH=/home/user/libs'
+      - 'TIMEOUT=600'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M

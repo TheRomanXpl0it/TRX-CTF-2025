@@ -1,0 +1,10 @@
+services:
+  factor-com:
+    build: .
+    ports:
+      - 7003:1337
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
+          memory: 512M

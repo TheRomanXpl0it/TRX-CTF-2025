@@ -1,0 +1,18 @@
+.CodeMirror-scroll{
+    background: rgb(20, 20, 20);
+}
+
+.CodeMirror{
+    box-shadow: 0 0 15px 5px rgba(42, 42, 42, 0.7);
+    border: 0px;
+    background-color: #000;
+    height: 100%;
+}
+
+body{
+    background-color: #0f0f0f !important;
+}
+
+.highlight-line {
+    background-color: rgba(255, 0, 0, 0.3);
+}

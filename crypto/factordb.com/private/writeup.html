@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/default.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.min.css">
+<link rel="stylesheet" href="file:////home/frank/.vscode/extensions/goessner.mdmath-2.7.4/themes/default/style.css">
+
+</head>
+<body class="markdown-body">
+<h1 dir="auto" id="factordbcom---writeup">factordb.com - Writeup</h1>
+<p dir="auto"><strong>Disclaimer:</strong> It's <strong>magicfrank</strong> speaking at <strong>20 Feb 00:57 2025</strong>. I really hope nobody actually uploads the factorization to <strong>factordb.com</strong>, but let’s see.</p>
+<h2 dir="auto" id="understanding-the-leak">Understanding the Leak</h2>
+<p dir="auto">This challenge is a standard RSA with a leak where we have to factorize the modulus.</p>
+<p dir="auto">The function generating the leak is particularly bad because <strong>each bit of leak_i only depends on the lower (least significant) bits of <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">p</span></span></span></span></eq> and <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi></mrow><annotation encoding="application/x-tex">q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span></span></span></span></eq></strong>.</p>
+<p dir="auto">This means:</p>
+<ul dir="auto">
+<li dir="auto"><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>LEAK</mtext><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>2</mn></mrow><annotation encoding="application/x-tex">\text{LEAK} \mod 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord text"><span class="mord">LEAK</span></span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span></span></span></span></eq> only depends on <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>2</mn></mrow><annotation encoding="application/x-tex">p \mod 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">p</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span></span></span></span></eq> and <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>2</mn></mrow><annotation encoding="application/x-tex">q \mod 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span></span></span></span></eq>.</li>
+<li dir="auto"><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>LEAK</mtext><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><msup><mn>2</mn><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\text{LEAK} \mod 2^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord text"><span class="mord">LEAK</span></span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></eq> depends only on <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>4</mn></mrow><annotation encoding="application/x-tex">p \mod 4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">p</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span></span></span></span></eq>, <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>4</mn></mrow><annotation encoding="application/x-tex">q \mod 4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span></span></span></span></eq>.</li>
+<li dir="auto"><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>LEAK</mtext><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><msup><mn>2</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\text{LEAK} \mod 2^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord text"><span class="mord">LEAK</span></span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span></eq> depends only on <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>8</mn></mrow><annotation encoding="application/x-tex">p \mod 8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">p</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">8</span></span></span></span></eq>, <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>8</mn></mrow><annotation encoding="application/x-tex">q \mod 8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">8</span></span></span></span></eq>.</li>
+</ul>
+<p dir="auto">Since each step <strong>only depends on previously discovered bits</strong>, we can reconstruct <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">p</span></span></span></span></eq> and <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi></mrow><annotation encoding="application/x-tex">q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span></span></span></span></eq> one bit at a time by trying all possible values and checking against both <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span></eq> and the leak.</p>
+<h2 dir="auto" id="recovering-the-factors">Recovering the Factors</h2>
+<p dir="auto">We recover <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">p</span></span></span></span></eq> and <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi></mrow><annotation encoding="application/x-tex">q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span></span></span></span></eq> bit by bit using <strong>brute-force with constraints</strong>. We start with the least significant bit (LSB) and systematically build up to the full values.</p>
+<h3 dir="auto" id="step-by-step-example">Step-by-Step Example</h3>
+<ol dir="auto">
+<li dir="auto">
+<p dir="auto"><strong>Finding the first bit</strong></p>
+<ul dir="auto">
+<li dir="auto">Since <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>2</mn><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">N \mod 2 = 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span></eq>, we know that <strong>both <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">p</span></span></span></span></eq> and <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi></mrow><annotation encoding="application/x-tex">q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span></span></span></span></eq> must be 1</strong>.</li>
+<li dir="auto">The possible values for <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>p</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>2</mn><mo separator="true">,</mo><mi>q</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(p \mod 2, q \mod 2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">p</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mclose">)</span></span></span></span></eq> are:
+<ul dir="auto">
+<li dir="auto">(0,0) → <strong>0 × 0</strong> = 0 (incorrect)</li>
+<li dir="auto">(0,1) → <strong>0 × 1</strong> = 0 (incorrect)</li>
+<li dir="auto">(1,0) → <strong>1 × 0</strong> = 0 (incorrect)</li>
+<li dir="auto">(1,1) → <strong>1 × 1</strong> = 1 (correct ✅)</li>
+</ul>
+</li>
+</ul>
+<p dir="auto">So the only valid choice is <strong>(1,1)</strong>.</p>
+</li>
+<li dir="auto">
+<p dir="auto"><strong>Finding the second bit</strong></p>
+<ul dir="auto">
+<li dir="auto">
+<p dir="auto">Now, we try all possibilities for the <strong>second-least significant bit</strong>, while keeping the first bit fixed.</p>
+</li>
+<li dir="auto">
+<p dir="auto">Possible values:</p>
+<ul dir="auto">
+<li dir="auto">(1,1)</li>
+<li dir="auto">(1,3)</li>
+<li dir="auto">(3,1)</li>
+<li dir="auto">(3,3)</li>
+</ul>
+</li>
+<li dir="auto">
+<p dir="auto">We check which of these satisfy both:</p>
+<ul dir="auto">
+<li dir="auto"><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>4</mn></mrow><annotation encoding="application/x-tex">N \mod 4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span></span></span></span></eq></li>
+<li dir="auto"><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>LEAK</mtext><mspace></mspace><mspace width="0.6666666666666666em"/><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mtext> </mtext><mtext> </mtext><mn>4</mn></mrow><annotation encoding="application/x-tex">\text{LEAK} \mod 4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord text"><span class="mord">LEAK</span></span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.6666666666666666em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span></span></span></span></eq></li>
+</ul>
+</li>
+<li dir="auto">
+<p dir="auto">In this case N%4 = 1</p>
+<ul dir="auto">
+<li dir="auto">(1,1) → <strong>1 × 1</strong> = 1 (correct ✅)</li>
+<li dir="auto">(1,3) → <strong>1 × 3</strong> = 3 (incorrect)</li>
+<li dir="auto">(3,1) → <strong>3 × 1</strong> = 3 (incorrect)</li>
+<li dir="auto">(3,3) → <strong>3 × 3</strong> = 1 (correct ✅)</li>
+</ul>
+</li>
+<li dir="auto">
+<p dir="auto">We have two valid choices: <strong>(1,1)</strong> and <strong>(3,3)</strong>, so let's check the leak function</p>
+</li>
+<li dir="auto">
+<p dir="auto">LEAK%4 = 2</p>
+<ul dir="auto">
+<li dir="auto">(1,1) → <strong>(0x1337 + 1 + 1) ^ (0x1337 * 1 * 1) &amp; (1 | 0x1337137)</strong> = 2 (correct ✅)</li>
+<li dir="auto">(3,3) → <strong>(0x1337 + 3 + 3) ^ (0x1337 * 3 * 3) &amp; (3 | 0x1337137)</strong> = 2 (correct ✅)</li>
+</ul>
+</li>
+<li dir="auto">
+<p dir="auto">Both are valid, so we can continue with both.</p>
+</li>
+</ul>
+</li>
+<li dir="auto">
+<p dir="auto"><strong>Finding the third bit</strong></p>
+<ul dir="auto">
+<li dir="auto">Now partial p and q could be either (1,1) or (3,3)</li>
+<li dir="auto">Possible values:
+<ul dir="auto">
+<li dir="auto">(1,1)</li>
+<li dir="auto">(1,5)</li>
+<li dir="auto">(5,1)</li>
+<li dir="auto">(5,5)</li>
+<li dir="auto">(3,3)</li>
+<li dir="auto">(3,7)</li>
+<li dir="auto">(7,3)</li>
+<li dir="auto">(7,7)</li>
+</ul>
+</li>
+<li dir="auto">Check on N%8=5
+<ul dir="auto">
+<li dir="auto">(1,1) → <strong>1 × 1</strong> = 1 (incorrect)</li>
+<li dir="auto">(1,5) → <strong>1 × 5</strong> = 5 (correct ✅)</li>
+<li dir="auto">(5,1) → <strong>5 × 1</strong> = 5 (correct ✅)</li>
+<li dir="auto">(5,5) → <strong>5 × 5</strong> = 1 (incorrect)</li>
+<li dir="auto">(3,3) → <strong>3 × 3</strong> = 4 (incorrect)</li>
+<li dir="auto">(3,7) → <strong>3 × 7</strong> = 5 (correct ✅)</li>
+<li dir="auto">(7,3) → <strong>7 × 3</strong> = 5 (correct ✅)</li>
+<li dir="auto">(7,7) → <strong>7 × 7</strong> = 1 (incorrect)</li>
+</ul>
+</li>
+<li dir="auto">Check on LEAK%8=2
+<ul dir="auto">
+<li dir="auto">(1,5) → <strong>(0x1337 + 1 + 5) ^ (0x1337 * 1 * 5) &amp; (1 | 0x1337137)</strong> = 6 (incorrect)</li>
+<li dir="auto">(5,1) → <strong>(0x1337 + 5 + 1) ^ (0x1337 * 5 * 1) &amp; (5 | 0x1337137)</strong> = 6 (incorrect)</li>
+<li dir="auto">(3,7) → <strong>(0x1337 + 3 + 7) ^ (0x1337 * 3 * 7) &amp; (3 | 0x1337137)</strong> = 2 (correct ✅)</li>
+<li dir="auto">(7,3) → <strong>(0x1337 + 7 + 3) ^ (0x1337 * 7 * 3) &amp; (7 | 0x1337137)</strong> = 2 (correct ✅)</li>
+</ul>
+</li>
+<li dir="auto">We have two valid choices: <strong>(1,5)</strong> and <strong>(3,7)</strong>
+<ul dir="auto">
+<li dir="auto">Note that the leak in this case actually helped us by eliminating half of the possibilities!</li>
+</ul>
+</li>
+</ul>
+</li>
+<li dir="auto">
+<p dir="auto"><strong>Finding the fourth bit</strong></p>
+<ul dir="auto">
+<li dir="auto">...</li>
+</ul>
+</li>
+</ol>
+<p dir="auto">.... <strong>...</strong></p>
+<h3 dir="auto" id="bfs-implementation">BFS Implementation</h3>
+<p dir="auto">We won't do it by hand (it's certainly possible, but humans invented computers for a reason).</p>
+<pre><code class="code-line language-python" dir="auto"><span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> deque
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">bfs</span>(<span class="hljs-params">n, leak</span>):
+    start = (<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>)  <span class="hljs-comment"># (p_guess, q_guess, bit_position)</span>
+    queue = deque([start])
+    ccc = <span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">while</span> queue:
+        pk, qk, k = queue.popleft()
+        ccc += <span class="hljs-number">1</span>
+        <span class="hljs-keyword">if</span> ccc % <span class="hljs-number">100</span> == <span class="hljs-number">0</span>:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\r<span class="hljs-subst">{k}</span>&quot;</span>, end=<span class="hljs-string">&#x27;&#x27;</span>)
+
+        <span class="hljs-keyword">if</span> pk * qk &gt; n:
+            <span class="hljs-keyword">continue</span>
+        <span class="hljs-keyword">if</span> pk * qk == n:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;FOUND&quot;</span>, pk, qk)
+            <span class="hljs-keyword">return</span> pk, qk
+        
+        <span class="hljs-comment"># Try all possible combinations of the next bit</span>
+        poss = [(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>), (<span class="hljs-number">0</span>,<span class="hljs-number">2</span>**(k-<span class="hljs-number">1</span>)), (<span class="hljs-number">2</span>**(k-<span class="hljs-number">1</span>),<span class="hljs-number">0</span>), (<span class="hljs-number">2</span>**(k-<span class="hljs-number">1</span>),<span class="hljs-number">2</span>**(k-<span class="hljs-number">1</span>))]
+        <span class="hljs-keyword">for</span> pos <span class="hljs-keyword">in</span> poss:
+            new_pk, new_qk = pk + pos[<span class="hljs-number">0</span>], qk + pos[<span class="hljs-number">1</span>]
+            <span class="hljs-keyword">if</span> (F(new_pk, new_qk) % <span class="hljs-number">2</span>**k == leak % <span class="hljs-number">2</span>**k <span class="hljs-keyword">and</span> 
+                (new_pk * new_qk) % <span class="hljs-number">2</span>**k == n % <span class="hljs-number">2</span>**k):
+                queue.append((new_pk, new_qk, k+<span class="hljs-number">1</span>))
+</code></pre>
+
+</body>
+</html>
